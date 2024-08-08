@@ -1,7 +1,8 @@
-import { User } from 'src/users/user.entity';
-import { Photo } from 'src/photos/photo.entity';
 import { IsString, IsUrl, IsBoolean } from 'class-validator';
 import { Entity, PrimaryGeneratedColumn, Column,ManyToOne,OneToOne } from 'typeorm';
+
+import { User } from 'src/users/user.entity';
+import { Photo } from 'src/photos/photo.entity';
 
 @Entity()
 export class Post {

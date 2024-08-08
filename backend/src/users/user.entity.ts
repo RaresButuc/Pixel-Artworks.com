@@ -1,7 +1,8 @@
-import { UserRole } from './user-role.enum';
-import { Post } from 'src/posts/post.entity';
 import { IsString, IsEmail, IsEnum } from 'class-validator';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+
+import { UserRole } from './user-role.enum';
+import { Post } from 'src/posts/post.entity';
 
 @Entity()
 export class User {

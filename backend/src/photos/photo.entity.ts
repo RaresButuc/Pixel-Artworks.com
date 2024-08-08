@@ -1,6 +1,7 @@
 import { IsString } from 'class-validator';
-import { Post } from 'src/posts/post.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+
+import { Post } from 'src/posts/post.entity';
 
 @Entity()
 export class Photo {
