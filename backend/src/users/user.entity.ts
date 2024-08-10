@@ -13,23 +13,29 @@ export class User {
     type: 'enum',
     enum: UserRole,
     nullable: false,
+    default: UserRole.USER,
   })
   @IsEnum(UserRole)
   private role: UserRole;
 
   @Column({ nullable: false })
   @IsString()
-  private username: string;
+  username: string;
 
   @Column({ nullable: false })
   @IsEmail()
-  private email: string;
+  email: string;
 
   @Column({ nullable: false })
-  private password: string;
+  password: string;
 
   @OneToMany(() => Post, (post) => post.getUser())
   private posts: Post[];
+
+  // Getter pentru id
+  getId(): number {
+    return this.id;
+  }
 
   // Getter pentru role
   getRole(): UserRole {

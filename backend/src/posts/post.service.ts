@@ -27,7 +27,7 @@ export class PostService {
 
   async addNewPost(post: Post): Promise<number> {
     try {
-      return (await this.postRepository.save(post)).id;
+      return (await this.postRepository.save(post)).getId();
     } catch (error) {
       throw new Error(
         'An Error Has Occurred! Be Careful To Complete Each Field Of The Post Correctly!',
