@@ -40,6 +40,11 @@ export class Post {
   @ManyToOne(() => User, (user) => user.getPosts())
   private user: User;
 
+  // Getter pentru title
+  getId(): number {
+    return this.id;
+  }
+
   // Getter pentru status
   getStatus(): boolean {
     return this.status;
