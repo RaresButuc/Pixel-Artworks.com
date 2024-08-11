@@ -13,7 +13,7 @@ export class UserController {
     return this.userService.getUserById(id);
   }
 
-  @Delete()
+  @Delete(':id')
   deleteUserById(@Param('id') id: number): Promise<void> {
     return this.userService.deleteUserById(id);
   }

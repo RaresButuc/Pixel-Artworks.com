@@ -10,15 +10,14 @@ export class Photo {
 
   @Column()
   @IsString()
-  private bucket: string;
+  bucket: string;
 
   @Column()
   @IsString()
-  private key: string;
+  key: string;
 
-  @Column()
-  @OneToOne(() => Post, (post) => post.getPhoto())
-  private post: Post;
+  @OneToOne(() => Post, (post) => post.photo)
+  post: Post;
 
   // Getter pentru bucket
   getBucket(): string {
@@ -41,12 +40,12 @@ export class Photo {
   }
 
   // Getter pentru post
-  getPost(): Post {
-    return this.post;
-  }
+  // getPost(): Post {
+  //   return this.post;
+  // }
 
   // Setter pentru post
-  setPost(post: Post): void {
-    this.post = post;
-  }
+  // setPost(post: Post): void {
+  //   this.post = post;
+  // }
 }

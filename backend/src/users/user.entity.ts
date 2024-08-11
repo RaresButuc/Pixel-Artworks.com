@@ -16,7 +16,7 @@ export class User {
     default: UserRole.USER,
   })
   @IsEnum(UserRole)
-  private role: UserRole;
+  role: UserRole;
 
   @Column({ nullable: false })
   @IsString()
@@ -29,8 +29,8 @@ export class User {
   @Column({ nullable: false })
   password: string;
 
-  @OneToMany(() => Post, (post) => post.getUser())
-  private posts: Post[];
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
 
   // Getter pentru id
   getId(): number {

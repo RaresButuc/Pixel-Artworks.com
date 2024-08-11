@@ -15,30 +15,29 @@ export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: false })
-  @IsBoolean()
-  private status: boolean;
-
-  @Column({ nullable: false })
-  @IsString()
-  private title: string;
-
   @Column()
-  @IsString()
-  private description: string;
+  @IsBoolean()
+  isPostedStatus: boolean;
 
-  @Column({ nullable: false })
-  @OneToOne(() => Photo, (photo) => photo.getPost(), {
+  @Column({ nullable: true })
+  @IsString()
+  title: string;
+
+  @Column({ nullable: true })
+  @IsString()
+  description: string;
+
+  @OneToOne(() => Photo, (photo) => photo.post, {
     orphanedRowAction: 'delete',
   })
-  private photo: Photo;
+  photo: Photo;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   @IsUrl()
-  private link: string;
+  link: string;
 
-  @ManyToOne(() => User, (user) => user.getPosts())
-  private user: User;
+  @ManyToOne(() => User, (user) => user.posts)
+  user: User;
 
   // Getter pentru title
   getId(): number {
@@ -47,12 +46,12 @@ export class Post {
 
   // Getter pentru status
   getStatus(): boolean {
-    return this.status;
+    return this.isPostedStatus;
   }
 
   // Setter pentru status
   setStatus(status: boolean): void {
-    this.status = status;
+    this.isPostedStatus = status;
   }
 
   // Getter pentru title
@@ -98,5 +97,10 @@ export class Post {
   // Getter pentru user
   getUser(): User {
     return this.user;
+  }
+
+  // Getter pentru user
+  setUser(user: User): void {
+    this.user = user;
   }
 }
