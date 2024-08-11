@@ -1,14 +1,16 @@
 import { Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Post } from './post.entity';
+import { AuthService } from 'src/security/authentication/auth.service';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post)
     private postRepository: Repository<Post>,
+    private readonly authService: AuthService,
   ) {}
 
   async getPostById(id: number): Promise<Post> {
@@ -16,7 +18,7 @@ export class PostService {
       const post = await this.postRepository.findOneBy({ id });
 
       if (!post) {
-        throw new Error("This Post Doesn't Exists! Try Again Later!");
+        throw new Error('This Post Is Not Available Anymore! Try Again Later');
       }
 
       return post;
@@ -25,13 +27,17 @@ export class PostService {
     }
   }
 
-  async addNewPost(post: Post): Promise<number> {
+  async addNewPost(): Promise<number> {
     try {
-      return (await this.postRepository.save(post)).getId();
+      const newPost = new Post();
+      const currentUser = await this.authService.getCurrentUser();
+
+      newPost.setStatus(false);
+      newPost.setUser(currentUser);
+
+      return (await this.postRepository.save(newPost)).getId();
     } catch (error) {
-      throw new Error(
-        'An Error Has Occurred! Be Careful To Complete Each Field Of The Post Correctly!',
-      );
+      throw new Error(error);
     }
   }
 
@@ -39,15 +45,17 @@ export class PostService {
     try {
       const currentPost = await this.getPostById(id);
 
-      currentPost.setLink(newPostData.getLink());
-      currentPost.setTitle(newPostData.getTitle());
-      currentPost.setDescription(newPostData.getDescription());
+      if (!currentPost) {
+        throw new Error('This User Was Not Found!');
+      }
+
+      currentPost.setLink(newPostData.link);
+      currentPost.setTitle(newPostData.title);
+      currentPost.setDescription(newPostData.description);
 
       await this.postRepository.save(currentPost);
     } catch (error) {
-      throw new Error(
-        'An Error Has Occurred! Be Careful To Complete Each Field Of The Post Correctly!',
-      );
+      throw new Error(error);
     }
   }
 
@@ -55,13 +63,15 @@ export class PostService {
     try {
       const currentPost = await this.getPostById(id);
 
-      currentPost.setStatus(!currentPost.getStatus);
+      if (!currentPost) {
+        throw new Error('This User Was Not Found!');
+      }
+
+      currentPost.setStatus(!currentPost.getStatus());
 
       await this.postRepository.save(currentPost);
     } catch (error) {
-      throw new Error(
-        'An Error Has Occurred! Be Careful To Complete Each Field Of The Post Correctly!',
-      );
+      throw new Error(error);
     }
   }
 

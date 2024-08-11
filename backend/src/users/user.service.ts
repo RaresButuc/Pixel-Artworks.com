@@ -16,11 +16,13 @@ export class UserService {
       const user = await this.userRepository.findOneBy({ id });
 
       if (!user) {
-        throw new Error('No User Found! Please Try Again Later');
+        throw new Error('This User Was Not Found!');
       }
-
+      
       return user;
     } catch (error) {
+      console.log(error);
+
       throw new Error(
         'An Error Occurred While Retrieving The User! Please Try Again Later!',
       );
@@ -31,9 +33,7 @@ export class UserService {
     try {
       await this.userRepository.delete({ id });
     } catch (error) {
-      throw new Error(
-        'An Error Occurred While Deleting This User!',
-      );
+      throw new Error('An Error Occurred While Deleting This User!');
     }
   }
 }
