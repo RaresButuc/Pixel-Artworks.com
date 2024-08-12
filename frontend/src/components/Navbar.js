@@ -1,9 +1,6 @@
-import axios from "axios";
 import { Outlet } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { useIsAuthenticated, useSignOut } from "react-auth-kit";
 
-import DefaultURL from "../utils/DefaultURL";
 import websiteLogo from "../images/website-logo.png";
 import CurrentUserInfos from "../utils/CurrentUserInfos";
 import noProfileImage from "../images/default-profile-image.png";
@@ -13,34 +10,6 @@ export default function Navbar() {
   const isAuthenticated = useIsAuthenticated();
 
   const currentUser = CurrentUserInfos();
-  const [profilePhoto, setProfilePhoto] = useState(null);
-
-  useEffect(() => {
-    if (currentUser?.profilePhoto) {
-      const fetchCurrentUserProfile = async () => {
-        try {
-          const reponseUserProfilePhoto = await axios.get(
-            `${DefaultURL}/user/get-profile-photo/${currentUser.id}`,
-            {
-              responseType: "arraybuffer",
-            }
-          );
-          const imageUrl = `data:image/jpeg;base64,
-        ${btoa(
-          new Uint8Array(reponseUserProfilePhoto.data).reduce(
-            (data, byte) => data + String.fromCharCode(byte),
-            ""
-          )
-        )}`;
-          setProfilePhoto(imageUrl);
-        } catch (err) {
-          console.log(err);
-        }
-      };
-
-      fetchCurrentUserProfile();
-    }
-  }, [currentUser]);
 
   const handleLogOut = () => {
     setTimeout(() => {
@@ -83,8 +52,8 @@ export default function Navbar() {
                 <a
                   className="nav-link fw-bold mx-2 mt-2"
                   aria-current="page"
-                  href="/article/trending?time=1"
-                  style={{color:"white"}}
+                  href="/portofolio"
+                  style={{ color: "white" }}
                 >
                   <b>Portofolio</b>
                 </a>
@@ -99,51 +68,30 @@ export default function Navbar() {
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
-                      {currentUser?.profilePhoto ? (
-                        <img
-                          src={profilePhoto}
-                          className="img-fluid rounded-circle"
-                          style={{
-                            borderColor: "black",
-                            width: "40px",
-                            height: "40px",
-                          }}
-                          alt={null}
-                        />
-                      ) : (
-                        <img
-                          src={noProfileImage}
-                          style={{
-                            width: "40px",
-                            height: "40px",
-                            marginBottom: "0px",
-                          }}
-                        />
-                      )}
+                      <img
+                        src={noProfileImage}
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          marginBottom: "0px",
+                        }}
+                      />
                     </button>
                     <ul className="dropdown-menu dropdown-menu-end border border-danger">
-                      {/* <li>
-                        <a
-                          className="dropdown-item"
-                          href={`/profile/${currentUser?.id}`}
-                        >
-                          Profile
-                        </a>
-                      </li> */}
-                      <li>
-                        <a
-                          className="dropdown-item"
-                          href={`/article/post/${currentUser?.id}`}
-                        >
-                          Post New Article
-                        </a>
-                      </li>
+                      {CurrentUserInfos?.role === "ADMIN" ? (
+                        <li>
+                          <a className="dropdown-item" href={`/new-post`}>
+                            New Post
+                          </a>
+                        </li>
+                      ) : null}
+
                       <li>
                         <hr className="border border-danger" />
                       </li>
                       <li>
-                        <a className="dropdown-item" href="/profile/change-password">
-                          Change Password
+                        <a className="dropdown-item" href="/profile/settings">
+                          Account Settings
                         </a>
                       </li>
                       <li>
@@ -161,22 +109,29 @@ export default function Navbar() {
                       className="font-weight-bold mx-2"
                       aria-current="page"
                       href="/register"
-                      style={{border:"2px solid #fee466",backgroundColor:"none",padding:"10px",textDecoration:"none",color:"#fee466",borderRadius:"15px"}}
+                      style={{
+                        border: "2px solid #fee466",
+                        backgroundColor: "none",
+                        padding: "10px",
+                        textDecoration: "none",
+                        color: "#fee466",
+                        borderRadius: "15px",
+                      }}
                     >
                       <b>Be Part Of My Community</b>
                     </a>
                   </li>
 
                   <li className="nav-item">
-                <a
-                  className="nav-link fw-bold mx-2 mt-2"
-                  aria-current="page"
-                  href="/article/trending?time=1"
-                  style={{color:"white"}}
-                >
-                  Log In
-                </a>
-              </li>
+                    <a
+                      className="nav-link fw-bold mx-2 mt-2"
+                      aria-current="page"
+                      href="/login"
+                      style={{ color: "white" }}
+                    >
+                      Log In
+                    </a>
+                  </li>
                 </>
               )}
             </ul>
