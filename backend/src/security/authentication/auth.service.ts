@@ -31,13 +31,19 @@ export class AuthService {
     user.setRole(UserRole.USER);
     user.setPassword(await bcrypt.hash(password, 10));
 
-    await this.userRepository.save(user);
+    if (!this.userRepository.findOneBy({ email })) {
+      await this.userRepository.save(user);
 
-    return this.jwtService.sign({
-      sub: user.getId(),
-      email: user.getEmail(),
-      role: user.getRole(),
-    });
+      return this.jwtService.sign({
+        sub: user.getId(),
+        email: user.getEmail(),
+        role: user.getRole(),
+      });
+    } else {
+      throw new Error(
+        'This Email Is Already Registered Into The Website! Use Other One!',
+      );
+    }
   }
 
   async login({ email, password }: LoginUserDTO) {
