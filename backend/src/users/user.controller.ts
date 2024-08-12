@@ -13,6 +13,11 @@ export class UserController {
     return this.userService.getUserById(id);
   }
 
+  @Get(':email')
+  getUserByEmail(@Param('id') email: string): Promise<User> {
+    return this.userService.getUserByEmail(email);
+  }
+
   @Delete(':id')
   deleteUserById(@Param('id') id: number): Promise<void> {
     return this.userService.deleteUserById(id);

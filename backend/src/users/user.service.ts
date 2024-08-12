@@ -18,7 +18,25 @@ export class UserService {
       if (!user) {
         throw new Error('This User Was Not Found!');
       }
-      
+
+      return user;
+    } catch (error) {
+      console.log(error);
+
+      throw new Error(
+        'An Error Occurred While Retrieving The User! Please Try Again Later!',
+      );
+    }
+  }
+
+  async getUserByEmail(email: string): Promise<User> {
+    try {
+      const user = await this.userRepository.findOneBy({ email });
+
+      if (!user) {
+        throw new Error('This User Was Not Found!');
+      }
+
       return user;
     } catch (error) {
       console.log(error);
