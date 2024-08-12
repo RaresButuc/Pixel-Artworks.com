@@ -31,7 +31,7 @@ export class AuthService {
     user.setRole(UserRole.USER);
     user.setPassword(await bcrypt.hash(password, 10));
 
-    if (!this.userRepository.findOneBy({ email })) {
+    if (!await this.userRepository.findOneBy({ email })) {
       await this.userRepository.save(user);
 
       return this.jwtService.sign({

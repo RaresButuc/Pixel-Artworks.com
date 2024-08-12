@@ -21,7 +21,7 @@ export default function Navbar() {
     <div className="container" style={{ paddingBottom: 120 }}>
       <nav
         className="navbar navbar-custom fixed-top navbar-expand-md navbar-light shadow-5-strong container-xl border-bottom"
-        style={{ backgroundColor: "#2596be" }}
+        style={{ backgroundColor: "#2596be",opacity:"0.9" }}
       >
         <div className="container-xl">
           <a className="navbar-brand" href="/">
