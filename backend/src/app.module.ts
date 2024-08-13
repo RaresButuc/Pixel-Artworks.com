@@ -1,6 +1,7 @@
 import { Module, MiddlewareConsumer } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { S3Module } from './s3/s3.module';
 import { Post } from './posts/post.entity';
 import { User } from './users/user.entity';
 import { Photo } from './photos/photo.entity';
@@ -25,6 +26,7 @@ import { AuthModule } from './security/authentication/auth.module';
     UserModule,
     PostModule,
     PhotoModule,
+    S3Module,
   ],
   controllers: [],
   providers: [],

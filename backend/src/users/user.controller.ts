@@ -14,7 +14,7 @@ export class UserController {
   }
 
   @Get('email/:email')
-  getUserByEmail(@Param('id') email: string): Promise<User> {
+  getUserByEmail(@Param('email') email: string): Promise<User> {    
     return this.userService.getUserByEmail(email);
   }
 

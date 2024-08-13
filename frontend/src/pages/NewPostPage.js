@@ -1,30 +1,48 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useIsAuthenticated } from "react-auth-kit";
+import { useEffect, useState, useRef } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast, Bounce } from "react-toastify";
+import { useIsAuthenticated, useAuthHeader } from "react-auth-kit";
 
 import DefaultURL from "../utils/DefaultURL";
 import CurrentUserInfos from "../utils/CurrentUserInfos";
+import PhotoInput from "../components/inputs/PhotoInput";
 
 export default function NewPostPage() {
   const navigate = useNavigate();
   const isAuthenticated = useIsAuthenticated();
 
+  const token = useAuthHeader();
+
+  const photo = useRef(null);
+
   const currentUser = CurrentUserInfos();
 
   useEffect(() => {
-    if (!isAuthenticated() || currentUser.role !== "ADMIN") {
-      navigate("/error");
+    if (currentUser) {
+      if (currentUser?.role !== "ADMIN" || !isAuthenticated()) {
+        navigate("/error");
+      }
     }
-  }, [currentUser, isAuthenticated()]);
+  }, [currentUser, isAuthenticated]);
 
   const onSubmit = async (values) => {
-    try {
-      const id = toast.loading("Please Wait A Little Bit...");
+    const id = toast.loading("Please Wait A Little Bit...");
 
-      let response = await axios.post(`${DefaultURL}/auth/register`, values);
+    try {
+      const headers = { Authorization: token() };
+
+      console.log(photo.current);
+      let response = await axios.post(`${DefaultURL}/post`, values, {
+        headers,
+      });
+
+      await axios.post(
+        `${DefaultURL}/s3/upload/${response.data.id}`,
+        photo.current.data,
+        { headers }
+      );
 
       toast.update(id, {
         render: "You Were Succesfully Registered!",
@@ -37,7 +55,19 @@ export default function NewPostPage() {
       }, 2000);
     } catch (err) {
       console.log(err);
-      toast.error(err.message, {
+      // toast.error(err.message, {
+      //   position: "bottom-center",
+      //   autoClose: 2000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   draggable: true,
+      //   theme: "light",
+      //   transition: Bounce,
+      // });
+      toast.update(id, {
+        render: err.message,
+        type: "error",
+        isLoading: false,
         position: "bottom-center",
         autoClose: 2000,
         hideProgressBar: false,
@@ -53,12 +83,24 @@ export default function NewPostPage() {
     e.preventDefault();
     const formData = new FormData(e.target);
     const authenticateData = {
-      email: formData.get("emailInput"),
-      username: formData.get("usernameInput"),
-      password: formData.get("passwordInput"),
+      title: formData.get("titleInput"),
+      description: formData.get("descriptionInput"),
+      link: formData.get("clientInput"),
     };
 
-    onSubmit(authenticateData);
+    if (photo.current !== null) {
+      onSubmit(authenticateData);
+    } else {
+      toast.error("You Can't Make The Post Without Choosing One Photo!", {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        theme: "light",
+        transition: Bounce,
+      });
+    }
   };
 
   return (
@@ -78,7 +120,7 @@ export default function NewPostPage() {
       />
 
       <form onSubmit={onSave}>
-        <section className="container-xl vh-100">
+        <section className="container-xl">
           <div className="container py-5 h-75">
             <div className="row d-flex justify-content-center align-items-center h-100">
               <div className="col-12 col-md-8 col-lg-6 col-xl-5">
@@ -94,8 +136,8 @@ export default function NewPostPage() {
                     <div className="form-outline mb-4">
                       <input
                         type="text"
-                        id="usernameInput"
-                        name="usernameInput"
+                        id="titleInput"
+                        name="titleInput"
                         className="form-control form-control-lg"
                         required
                         placeholder="Title"
@@ -113,12 +155,17 @@ export default function NewPostPage() {
                       />
                     </div>
 
-                    <div className="form-outline mb-4">
+                    <div className="form-outline mb-5">
                       <input
                         id="clientInput"
+                        name="clientInput"
                         className="form-control form-control-lg"
                         placeholder="Client Link"
                       />
+                    </div>
+
+                    <div className="form-outline mb-4">
+                      <PhotoInput ref={photo} />
                     </div>
 
                     <button

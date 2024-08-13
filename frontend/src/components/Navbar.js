@@ -61,17 +61,19 @@ export default function Navbar() {
 
               {isAuthenticated() ? (
                 <>
-                {currentUser?.role === "ADMIN" ?<li className="nav-item">
-                    <a
-                      className="nav-link fw-bold mx-2 mt-2"
-                      aria-current="page"
-                      href="/new-post"
-                      style={{ color: "#fee466" }}
-                    >
-                      <b>New Post</b>
-                    </a>
-                  </li>:null}
-                  
+                  {currentUser?.role === "ADMIN" ? (
+                    <li className="nav-item">
+                      <a
+                        className="nav-link fw-bold mx-2 mt-2"
+                        aria-current="page"
+                        href="/new-post"
+                        style={{ color: "#fee466" }}
+                      >
+                        <b>New Post</b>
+                      </a>
+                    </li>
+                  ) : null}
+
                   <li className="nav-item">
                     <div className="dropdown">
                       <button
@@ -90,18 +92,16 @@ export default function Navbar() {
                         />
                       </button>
                       <ul className="dropdown-menu dropdown-menu-end border border-warning">
-                        {currentUser?.role === "ADMIN" ? (
-                          <li>
-                            <h5
-                              className="dropdown-item text-break"
-                              href={`/new-post`}
-                            >
-                              Hello,
-                              <br />
-                              <b>{currentUser?.username}</b>
-                            </h5>
-                          </li>
-                        ) : null}
+                        <li>
+                          <h5
+                            className="dropdown-item text-break"
+                            href={`/new-post`}
+                          >
+                            Hello,
+                            <br />
+                            <b>{currentUser?.username}</b>
+                          </h5>
+                        </li>
 
                         <li>
                           <hr className="border border-warning" />

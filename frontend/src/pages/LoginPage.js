@@ -1,4 +1,5 @@
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import { useSignIn } from "react-auth-kit";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
@@ -22,16 +23,18 @@ export default function LoginPage() {
         isLoading: false,
       });
 
+      const decodedTokenUser = jwtDecode(response.data);
+console.log(decodedTokenUser.role);
       signIn({
-        token: response.data.token,
+        token: response.data,
         expiresIn: 3600,
         tokenType: "Bearer",
-        authState: { email: values.email, role: response.data.role },
+        authState: { email: values.email, role: decodedTokenUser.role },
       });
 
-      setTimeout(() => {
-        navigate("/portofolio");
-      }, 2000);
+      // setTimeout(() => {
+      //   navigate("/portofolio");
+      // }, 2000);
     } catch (err) {
       toast.error(err.message, {
         position: "bottom-center",

@@ -47,7 +47,7 @@ export class AuthService {
   }
 
   async login({ email, password }: LoginUserDTO) {
-    const user = await this.userRepository.findOne({ where: { email } });
+    const user = await this.userRepository.findOneBy({ email });
 
     if (!user) {
       throw new Error('User Was Not Found!');

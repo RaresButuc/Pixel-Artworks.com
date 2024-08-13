@@ -13,13 +13,15 @@ export default function CurrentUserInfos() {
       const getUserByEmail = async () => {
         try {
           const response = await axios.get(
-            `${DefaultURL}/user/email/${auth()?.email}`
+            `${DefaultURL}/user/email/${auth().email}`
           );
+
           setUser(response.data);
         } catch (err) {
           console.log(err);
         }
       };
+
       getUserByEmail();
     }
   }, [auth()?.email]);
