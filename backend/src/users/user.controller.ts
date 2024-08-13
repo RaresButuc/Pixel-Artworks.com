@@ -13,8 +13,8 @@ export class UserController {
     return this.userService.getUserById(id);
   }
 
-  @Get(':email')
-  getUserByEmail(@Param('id') email: string): Promise<User> {
+  @Get('email/:email')
+  getUserByEmail(@Param('email') email: string): Promise<User> {    
     return this.userService.getUserByEmail(email);
   }
 

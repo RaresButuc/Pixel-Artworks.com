@@ -25,11 +25,16 @@ export class PostController {
     return this.postService.getPostById(id);
   }
 
+  @Get()
+  getAllPosts(): Promise<PostEntity[]> {
+    return this.postService.getAllPosts();
+  }
+
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @SetMetadata('roles', [UserRole.ADMIN])
-  addNewPost(): Promise<number> {
-    return this.postService.addNewPost();
+  addNewPost(@Body() post: PostEntity): Promise<number> {
+    return this.postService.addNewPost(post);
   }
 
   @Put(':id')

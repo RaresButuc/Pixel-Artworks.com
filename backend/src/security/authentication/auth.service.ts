@@ -31,7 +31,7 @@ export class AuthService {
     user.setRole(UserRole.USER);
     user.setPassword(await bcrypt.hash(password, 10));
 
-    if (!this.userRepository.findOneBy({ email })) {
+    if (!(await this.userRepository.findOneBy({ email }))) {
       await this.userRepository.save(user);
 
       return this.jwtService.sign({
@@ -47,16 +47,16 @@ export class AuthService {
   }
 
   async login({ email, password }: LoginUserDTO) {
-    const user = await this.userRepository.findOne({ where: { email } });
+    const user = await this.userRepository.findOneBy({ email });
 
     if (!user) {
-      throw new Error('User not found');
+      throw new Error('User Was Not Found!');
     }
 
     const isValidPassword = await bcrypt.compare(password, user.getPassword());
 
     if (!isValidPassword) {
-      throw new Error('Invalid password');
+      throw new Error('Invalid Password! Try Again Carefully!');
     }
 
     return this.jwtService.sign({

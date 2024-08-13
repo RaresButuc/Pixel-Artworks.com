@@ -27,16 +27,29 @@ export class PostService {
     }
   }
 
-  async addNewPost(): Promise<number> {
+  async getAllPosts(): Promise<Post[]> {
+    try {
+      return await this.postRepository.find();
+    } catch (error) {
+      throw new Error('The Posts Are Unavailable Right Now! Try Again Later');
+    }
+  }
+
+  async addNewPost(post: Post): Promise<number> {
     try {
       const newPost = new Post();
       const currentUser = await this.authService.getCurrentUser();
 
+      newPost.setTitle(post.title);
+      newPost.setDescription(post.description);
+      newPost.setLink(post.link);
       newPost.setStatus(false);
       newPost.setUser(currentUser);
 
       return (await this.postRepository.save(newPost)).getId();
     } catch (error) {
+      console.log(error);
+
       throw new Error(error);
     }
   }

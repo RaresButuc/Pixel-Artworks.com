@@ -5,6 +5,9 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import NewPostPage from "./pages/NewPostPage";
+import RegisterPage from "./pages/RegisterPage";
 
 import "./App.css";
 
@@ -16,8 +19,9 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<HomePage />} />
-
-            
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/new-post" element={<NewPostPage />} />
           </Routes>
         </Router>
       </div>

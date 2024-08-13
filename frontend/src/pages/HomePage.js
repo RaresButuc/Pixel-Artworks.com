@@ -1,9 +1,12 @@
 import ArtistPhoto from "../images/home-page/artist-photo.png";
 
 export default function HomePage() {
-  return  (
+  return (
     <div className="container-xl">
-      <div className="row d-flex align-items-center" style={{marginTop:"5%"}}>
+      <div
+        className="row d-flex align-items-center"
+        style={{ marginTop: "7%", marginBottom: "5%" }}
+      >
         <div className="col-xl-5 col-sm-12">
           <img
             className="img-fluid"
