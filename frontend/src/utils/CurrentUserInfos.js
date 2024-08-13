@@ -24,5 +24,5 @@ export default function CurrentUserInfos() {
     }
   }, [auth()?.email]);
 
-  return user;
+  return user&&user;
 }

@@ -21,7 +21,7 @@ export default function Navbar() {
     <div className="container" style={{ paddingBottom: 120 }}>
       <nav
         className="navbar navbar-custom fixed-top navbar-expand-md navbar-light shadow-5-strong container-xl border-bottom"
-        style={{ backgroundColor: "#2596be",opacity:"0.9" }}
+        style={{ backgroundColor: "#2596be", opacity: "0.9" }}
       >
         <div className="container-xl">
           <a className="navbar-brand" href="/">
@@ -60,48 +60,66 @@ export default function Navbar() {
               </li>
 
               {isAuthenticated() ? (
-                <li className="nav-item">
-                  <div className="dropdown">
-                    <button
-                      className="btn dropdown-toggle"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
+                <>
+                {currentUser?.role === "ADMIN" ?<li className="nav-item">
+                    <a
+                      className="nav-link fw-bold mx-2 mt-2"
+                      aria-current="page"
+                      href="/new-post"
+                      style={{ color: "#fee466" }}
                     >
-                      <img
-                        src={noProfileImage}
-                        style={{
-                          width: "40px",
-                          height: "40px",
-                          marginBottom: "0px",
-                        }}
-                      />
-                    </button>
-                    <ul className="dropdown-menu dropdown-menu-end border border-danger">
-                      {CurrentUserInfos?.role === "ADMIN" ? (
+                      <b>New Post</b>
+                    </a>
+                  </li>:null}
+                  
+                  <li className="nav-item">
+                    <div className="dropdown">
+                      <button
+                        className="btn dropdown-toggle"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        <img
+                          src={noProfileImage}
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            marginBottom: "0px",
+                          }}
+                        />
+                      </button>
+                      <ul className="dropdown-menu dropdown-menu-end border border-warning">
+                        {currentUser?.role === "ADMIN" ? (
+                          <li>
+                            <h5
+                              className="dropdown-item text-break"
+                              href={`/new-post`}
+                            >
+                              Hello,
+                              <br />
+                              <b>{currentUser?.username}</b>
+                            </h5>
+                          </li>
+                        ) : null}
+
                         <li>
-                          <a className="dropdown-item" href={`/new-post`}>
-                            New Post
+                          <hr className="border border-warning" />
+                        </li>
+                        <li>
+                          <a className="dropdown-item" href="/profile/settings">
+                            Account Settings
                           </a>
                         </li>
-                      ) : null}
-
-                      <li>
-                        <hr className="border border-danger" />
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="/profile/settings">
-                          Account Settings
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" onClick={handleLogOut}>
-                          Logout
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </li>
+                        <li>
+                          <a className="dropdown-item" onClick={handleLogOut}>
+                            Log Out
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                </>
               ) : (
                 <>
                   <li className="nav-item mt-3">
