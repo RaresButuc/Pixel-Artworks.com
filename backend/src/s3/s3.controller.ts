@@ -23,6 +23,6 @@ export class S3Controller {
   @SetMetadata('roles', [UserRole.ADMIN])
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Multer.File, @Param('id') id: number) {
-    return this.s3Service.uploadFile(id, file);
+        return this.s3Service.uploadFile(id, file);
   }
 }

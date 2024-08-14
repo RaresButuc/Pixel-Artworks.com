@@ -24,7 +24,7 @@ export default function LoginPage() {
       });
 
       const decodedTokenUser = jwtDecode(response.data);
-console.log(decodedTokenUser.role);
+      
       signIn({
         token: response.data,
         expiresIn: 3600,

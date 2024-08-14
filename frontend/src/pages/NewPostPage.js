@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import { useIsAuthenticated, useAuthHeader } from "react-auth-kit";
+import imageCompression from "browser-image-compression";
 
 import DefaultURL from "../utils/DefaultURL";
 import CurrentUserInfos from "../utils/CurrentUserInfos";
@@ -33,37 +34,28 @@ export default function NewPostPage() {
     try {
       const headers = { Authorization: token() };
 
-      console.log(photo.current);
       let response = await axios.post(`${DefaultURL}/post`, values, {
         headers,
       });
 
-      await axios.post(
-        `${DefaultURL}/s3/upload/${response.data.id}`,
-        photo.current.data,
-        { headers }
-      );
+      const formData = new FormData();
+      formData.append("file", photo.current.data);
+
+      await axios.post(`${DefaultURL}/s3/upload/${response.data}`, formData, {
+        headers,
+      });
 
       toast.update(id, {
-        render: "You Were Succesfully Registered!",
+        render: "You Succesfully Made A New Post!",
         type: "success",
         isLoading: false,
       });
 
-      setTimeout(() => {
-        navigate("/portofolio");
-      }, 2000);
+      // setTimeout(() => {
+      //   navigate("/portofolio");
+      // }, 2000);
     } catch (err) {
       console.log(err);
-      // toast.error(err.message, {
-      //   position: "bottom-center",
-      //   autoClose: 2000,
-      //   hideProgressBar: false,
-      //   closeOnClick: true,
-      //   draggable: true,
-      //   theme: "light",
-      //   transition: Bounce,
-      // });
       toast.update(id, {
         render: err.message,
         type: "error",
@@ -101,6 +93,14 @@ export default function NewPostPage() {
         transition: Bounce,
       });
     }
+  };
+
+  const handleFileUpload = async (file) => {
+    return await imageCompression(file, {
+      maxSizeMB: 1,
+      // maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    });
   };
 
   return (

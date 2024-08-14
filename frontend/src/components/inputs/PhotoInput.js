@@ -124,16 +124,6 @@ const PhotoInput = forwardRef(({ post }, ref) => {
           isLoading: false,
           transition: Bounce,
         });
-
-        // toast.error("The File You Tried To Drop Is Not An Image! Try Again!", {
-        //   position: "bottom-center",
-        //   autoClose: 3000,
-        //   hideProgressBar: false,
-        //   closeOnClick: true,
-        //   draggable: true,
-        //   theme: "light",
-        //   transition: Bounce,
-        // });
       }
     },
     [photo]

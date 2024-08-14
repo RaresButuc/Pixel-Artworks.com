@@ -25,28 +25,32 @@ export class S3Service {
   }
 
   async uploadFile(id: number, file: Multer.File) {
+    const bucket = 'pixelartworks';
+    const key = `${id}_image`;
+
+    const post = await this.postRepository.findOneBy({ id });
+
     const params = {
-      Bucket: 'pixelartworks',
-      Key: id.toString(),
+      Bucket: bucket,
+      Key: key,
       Body: file.buffer,
     };
 
     try {
       const newPhoto = new Photo();
-      newPhoto.setBucket(params.Bucket);
-      newPhoto.setKey(params.Key);
-
-      await this.s3.upload(params).promise();
+      newPhoto.setKey(key);
+      newPhoto.setPost(post);
+      newPhoto.setBucket(bucket);
 
       const photoSaved = await this.photoRepository.save(newPhoto);
 
-      const post = await this.postRepository.findOneBy({ id });
-      post.setPhoto(photoSaved);
+      await this.s3.upload(params).promise();
 
+      post.setPhoto(photoSaved);
       this.postRepository.save(post);
       return true;
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       return false;
     }
   }

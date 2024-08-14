@@ -45,7 +45,7 @@ export class Photo {
   // }
 
   // Setter pentru post
-  // setPost(post: Post): void {
-  //   this.post = post;
-  // }
+  setPost(post: Post): void {
+    this.post = post;
+  }
 }
