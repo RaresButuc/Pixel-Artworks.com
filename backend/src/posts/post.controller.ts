@@ -15,6 +15,7 @@ import { Post as PostEntity } from './post.entity';
 import { UserRole } from 'src/users/user-role.enum';
 import { RolesGuard } from 'src/security/authorization/roles.guard';
 import { JwtAuthGuard } from 'src/security/authorization/athz.jwtauthguard';
+import { PostWithPhotoDTO } from 'src/dtos/postsWithPhoto.dto';
 
 @Controller('post')
 export class PostController {
@@ -26,8 +27,17 @@ export class PostController {
   }
 
   @Get()
-  getAllPosts(): Promise<PostEntity[]> {
-    return this.postService.getAllPosts();
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @SetMetadata('roles', [UserRole.ADMIN])
+  getAllPostsAdmin(): Promise<PostWithPhotoDTO[]> {
+    return this.postService.getAllPostsAdmin();
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @SetMetadata('roles', [UserRole.ADMIN])
+  getAllPostsByAnyone(): Promise<PostWithPhotoDTO[]> {
+    return this.postService.getAllPostsAnyone();
   }
 
   @Post()

@@ -4,6 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Post } from './post.entity';
 import { AuthService } from 'src/security/authentication/auth.service';
+import { S3Service } from 'src/s3/s3.service';
+import { PostWithPhotoDTO } from 'src/dtos/postsWithPhoto.dto';
 
 @Injectable()
 export class PostService {
@@ -11,6 +13,7 @@ export class PostService {
     @InjectRepository(Post)
     private postRepository: Repository<Post>,
     private readonly authService: AuthService,
+    private readonly s3Service: S3Service,
   ) {}
 
   async getPostById(id: number): Promise<Post> {
@@ -27,9 +30,32 @@ export class PostService {
     }
   }
 
-  async getAllPosts(): Promise<Post[]> {
+  async getAllPostsAdmin(): Promise<PostWithPhotoDTO[]> {
     try {
-      return await this.postRepository.find();
+      const posts = await this.postRepository.find();
+  
+      const postsWithPhotos = await Promise.all(
+        posts.map(async (e) => {
+          const postWithPhoto = new PostWithPhotoDTO();
+          const photo = await this.s3Service.getPhoto(e.id);
+          postWithPhoto.setPost(e);
+          postWithPhoto.setPhoto(photo);
+  
+          return postWithPhoto;
+        })
+      );
+  
+      return postsWithPhotos;
+    } catch (error) {
+      throw new Error('The Posts Are Unavailable Right Now! Try Again Later');
+    }
+  }
+
+  async getAllPostsAnyone(): Promise<PostWithPhotoDTO[]> {
+    try {
+      return (await this.getAllPostsAdmin()).filter((e) =>
+        e.getPost().getStatus(),
+      );
     } catch (error) {
       throw new Error('The Posts Are Unavailable Right Now! Try Again Later');
     }

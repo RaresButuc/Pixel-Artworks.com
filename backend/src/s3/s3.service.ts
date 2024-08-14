@@ -2,6 +2,7 @@ import * as AWS from 'aws-sdk';
 import { Multer } from 'multer';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
+import { streamToBuffer } from 'stream-buffers';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Post } from '../posts/post.entity';
@@ -22,6 +23,25 @@ export class S3Service {
       secretAccessKey: 'ImeiUXQ3uIMzLybRaU6s/LHgFGy5GcPzbFcgwJ8J',
       region: 'eu-central-1',
     });
+  }
+
+  async getPhoto(id: number): Promise<Buffer> {
+    const bucket = 'pixelartworks';
+    const key = `${id}_image`;
+
+    const params = {
+      Bucket: bucket,
+      Key: key,
+    };
+
+    try {
+      const s3 = new AWS.S3();
+      const file = s3.getObject(params).createReadStream();
+
+      return await new streamToBuffer().fromStream(file);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async uploadFile(id: number, file: Multer.File) {
@@ -50,7 +70,6 @@ export class S3Service {
       this.postRepository.save(post);
       return true;
     } catch (error) {
-      // console.error(error);
       return false;
     }
   }
